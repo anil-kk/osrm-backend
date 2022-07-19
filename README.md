@@ -1,4 +1,4 @@
-## Open Source Routing Machine
+## Open Source Routing Machine for Sweden based on OpenSteert maps
 
 | Linux / macOS | Windows | Code Coverage |
 | ------------- | ------- | ------------- |
