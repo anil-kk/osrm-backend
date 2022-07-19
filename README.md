@@ -88,7 +88,14 @@ Make requests against the HTTP server
 
 Optionally start a user-friendly frontend on port 9966, and open it up in your browser
 
-    docker run -p 9966:9966 osrm/osrm-frontend
+   ~~docker run -p 9966:9966 osrm/osrm-frontend~~
+   
+    podman run -e OSRM_BACKEND='http://<IP_ADDRESS>:5001' -p 9966:9966 osrm/osrm-frontend 
+
+-e OSRM_BACKEND='http://<IP_ADDRESS>:5001' needed only when port is not 5000
+
+----    
+    
     xdg-open 'http://127.0.0.1:9966'
 
 In case Docker complains about not being able to connect to the Docker daemon make sure you are in the `docker` group.
