@@ -48,38 +48,42 @@ we recommend using MLD by default except for special use-cases such as very larg
 In the following we explain the MLD pipeline.
 If you want to use the CH pipeline instead replace `osrm-partition` and `osrm-customize` with a single `osrm-contract` and change the algorithm option for `osrm-routed` to `--algorithm ch`.
 
-### Using Docker
+### Using Podman
 
 We base our Docker images ([backend](https://hub.docker.com/r/osrm/osrm-backend/), [frontend](https://hub.docker.com/r/osrm/osrm-frontend/)) on Debian and make sure they are as lightweight as possible.
 
 Download OpenStreetMap extracts for example from [Geofabrik](http://download.geofabrik.de/)
 
-    ~~wget http://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf~~
+   ~~wget http://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf~~
+
     wget http://download.geofabrik.de/europe/sweden-latest.osm.pbf
 
 Pre-process the extract with the car profile and start a routing engine HTTP server on port 5000
 
-    ~~docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-extract -p /opt/car.lua /data/berlin-latest.osm.pbf~~
+   ~~docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-extract -p /opt/car.lua /data/berlin-latest.osm.pbf~~
+   
     podman run -t -v "${PWD}:/data" osrm/osrm-backend osrm-extract -p /opt/car.lua /data/sweden-latest.osm.pbf
 
 The flag `-v "${PWD}:/data"` creates the directory `/data` inside the docker container and makes the current working directory `"${PWD}"` available there. The file `/data/berlin-latest.osm.pbf` inside the container is referring to `"${PWD}/berlin-latest.osm.pbf"` on the host.
 
-    ~~docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-partition /data/berlin-latest.osrm~~
-    ~~docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-customize /data/berlin-latest.osrm~~
+   ~~docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-partition /data/berlin-latest.osrm~~
+   ~~docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-customize /data/berlin-latest.osrm~~
     
     podman run -t -v "${PWD}:/data" osrm/osrm-backend osrm-partition /data/sweden-latest.osrm
     podman run -t -v "${PWD}:/data" osrm/osrm-backend osrm-customize /data/sweden-latest.osrm    
 
 Note that `berlin-latest.osrm` has a different file extension. 
 
-    ~~docker run -t -i -p 5000:5000 -v "${PWD}:/data" osrm/osrm-backend osrm-routed --algorithm mld /data/berlin-latest.osrm~~
+   ~~docker run -t -i -p 5000:5000 -v "${PWD}:/data" osrm/osrm-backend osrm-routed --algorithm mld /data/berlin-latest.osrm~~
+   
     podman run -t -i -p 5001:5000 -v "${PWD}:/data" osrm/osrm-backend osrm-routed --algorithm mld /data/sweden-latest.osrm
 
 5001 is external port  that is mapped  to internal port 5000 from container
 
 Make requests against the HTTP server
 
-    ~~curl "http://127.0.0.1:5000/route/v1/driving/13.388860,52.517037;13.385983,52.496891?steps=true"~~
+   ~~curl "http://127.0.0.1:5000/route/v1/driving/13.388860,52.517037;13.385983,52.496891?steps=true"~~
+   
     curl "http://<IP ADDRESS>:5001/route/v1/driving/12.707702,56.041834;12.703765,56.031386?steps=true"
 
 Optionally start a user-friendly frontend on port 9966, and open it up in your browser
