@@ -94,6 +94,29 @@ Optionally start a user-friendly frontend on port 9966, and open it up in your b
 
 -e OSRM_BACKEND='http://<IP_ADDRESS>:5001' needed only when port is not 5000
 
+
+### [FIX](https://github.com/Project-OSRM/osrm-frontend/issues/278#issuecomment-465711476)
+editing package.json to remove live reload which throughs errors
+
+
+Edit the line,
+
+    "start-index": "budo src/index.js --serve=bundle.js --live -d | bistre",
+    
+To,
+
+    "start-index": "budo src/index.js --serve=bundle.js -d | bistre",
+    
+
+### Podman - edit configuration files from container
+
+    podman cp <CONTAINER_ID>:/src/package.json .
+    nano package.json
+    podman cp package.json <CONTAINER_ID>:/src/package.json
+    podman restart <CONTAINER_ID>
+    
+
+
 ----    
     
     xdg-open 'http://127.0.0.1:9966'
